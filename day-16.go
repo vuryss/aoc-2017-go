@@ -12,11 +12,20 @@ func part(input string) {
 	instr := strings.Split(input, ",")
 	programs := []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'}
 	progString := string(programs)
+	first := progString
+	cycleLength := 0
 	memory := make(map[string]string)
 
 	for j := 0; j < 1000000000; j++ {
 		if result, exists := memory[progString]; exists {
 			progString = result
+			if progString == first {
+				cycleLength = j
+				for j < 1000000000 {
+					j += cycleLength
+				}
+				j -= cycleLength
+			}
 			continue
 		}
 

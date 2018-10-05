@@ -11,20 +11,16 @@ func part(input string) {
 	start := time.Now()
 	instr := strings.Split(input, ",")
 	programs := []rune{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p'}
-	tempStr := ""
-	memory := make(map[string][]rune)
+	progString := string(programs)
+	memory := make(map[string]string)
 
 	for j := 0; j < 1000000000; j++ {
-		tempStr = string(programs)
-
-		if j % 1000000 == 0 {
-			log.Print(j)
-		}
-
-		if result, exists := memory[tempStr]; exists {
-			programs = result
+		if result, exists := memory[progString]; exists {
+			progString = result
 			continue
 		}
+
+		programs = []rune(progString)
 
 		for i := range instr {
 			item := []rune(instr[i])
@@ -56,14 +52,15 @@ func part(input string) {
 			}
 		}
 
-		memory[tempStr] = []rune(string(programs))
+		memory[progString] = string(programs)
+		progString = string([]rune(memory[progString]))
 
 		if j == 0 {
 			log.Printf("String: %v", string(programs))
 		}
 	}
 
-	log.Printf("String: %v", string(programs))
+	log.Printf("String: %v", string(progString))
 
 	log.Printf("Execution time: %v", time.Since(start))
 }

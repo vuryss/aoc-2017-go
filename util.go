@@ -5,6 +5,14 @@ import (
 	"log"
 )
 
+type Point2 struct {
+	x, y int
+}
+
+type Point3 struct {
+	x, y, z int
+}
+
 func getInput(day string) string {
 	byteContent, err := ioutil.ReadFile("inputs/" + day)
 

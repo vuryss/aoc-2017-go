@@ -14,6 +14,15 @@ type Particle struct {
 	ax, ay, az int
 }
 
+func (p *Particle) tick() {
+	p.vx += p.ax
+	p.vy += p.ay
+	p.vz += p.az
+	p.x += p.vx
+	p.y += p.vy
+	p.z += p.vz
+}
+
 func abs(x int) int {
 	if x < 0 {
 		return x * -1
@@ -22,10 +31,10 @@ func abs(x int) int {
 	return x
 }
 
-func day20part1(input string) {
+func day20(input string) {
 	start := time.Now()
 	lines := strings.Split(input, "\n")
-	particles := make([]Particle, len(lines))
+	particles := make(map[int]Particle)
 	re := regexp.MustCompile(`-?\d+`)
 
 	for i := range lines {
@@ -56,10 +65,38 @@ func day20part1(input string) {
 
 	log.Printf("Particle: %v", pIndex)
 
+	iterations := 100
+
+	for i := 0; i < iterations; i++ {
+		points := make(map[Point3]int)
+		collided := make(map[int]bool, 0)
+
+		for j, particle := range particles {
+			particle.tick()
+			particles[j] = particle
+			point := Point3{particle.x, particle.y, particle.z}
+
+			if index, exists := points[point]; exists {
+				collided[j], collided[index] = true, true
+				continue
+			}
+
+			points[point] = j
+		}
+
+		for j := range collided {
+			delete(particles, j)
+		}
+
+		if i == iterations - 1 {
+			log.Printf("After %v steps, particles left: %v", iterations, len(particles))
+		}
+	}
+
 	log.Printf("Execution time: %v", time.Since(start))
 }
 
 func main() {
 	input := getInput("day-20")
-	day20part1(input)
+	day20(input)
 }
